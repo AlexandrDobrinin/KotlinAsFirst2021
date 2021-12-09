@@ -208,7 +208,13 @@ fun canBuildFrom(chars: List<Char>, word: String): Boolean = TODO()
  * Например:
  *   extractRepeats(listOf("a", "b", "a")) -> mapOf("a" to 2)
  */
-fun extractRepeats(list: List<String>): Map<String, Int> = TODO()
+fun extractRepeats(list: List<String>): Map<String, Int> {
+    var repeats = mutableMapOf<String, Int>()
+    for (element in list)
+        repeats[element] = repeats.getOrDefault(element, 0) + 1
+    return repeats.filter { it.value >= 2 }
+}
+
 
 /**
  * Средняя (3 балла)
@@ -277,7 +283,15 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  *   findSumOfTwo(listOf(1, 2, 3), 4) -> Pair(0, 2)
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
-fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> = TODO()
+fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
+    val sum = mutableMapOf<Int, Int>()
+    for ((index, element) in list.withIndex()) {
+        if (sum[number - element] == null)
+            sum[element] = index
+        else return sum[number - element]!! to index
+    }
+    return Pair(-1, -1)
+}
 
 /**
  * Очень сложная (8 баллов)

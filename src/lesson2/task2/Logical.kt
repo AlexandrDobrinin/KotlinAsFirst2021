@@ -33,9 +33,8 @@ fun isNumberHappy(number: Int): Boolean {
  * Определить, угрожают ли они друг другу. Вернуть true, если угрожают.
  * Считать, что ферзи не могут загораживать друг друга.
  */
-fun queenThreatens(x1: Int, y1: Int, x2: Int, y2: Int): Boolean {
-    return ((x1 == x2) || (y1 == y2) || (sqr (x1 - x2) == sqr (y1 - y2)))
-}
+fun queenThreatens(x1: Int, y1: Int, x2: Int, y2: Int): Boolean = x1 == x2 || y1 == y2 || sqr (x1 - x2) == sqr (y1 - y2)
+
 
 
 /**
@@ -65,9 +64,8 @@ fun daysInMonth(month: Int, year: Int): Int {
 fun circleInside(
     x1: Double, y1: Double, r1: Double,
     x2: Double, y2: Double, r2: Double
-): Boolean {
-    return sqrt(sqr(x2 - x1) + sqr(y2 - y1)) <= (r2 - r1)
-}
+): Boolean = sqrt(sqr(x2 - x1) + sqr(y2 - y1)) <= (r2 - r1)
+
 
 /**
  * Средняя (3 балла)
@@ -78,6 +76,6 @@ fun circleInside(
  * кирпич 4 х 4 х 4 пройдёт через отверстие 4 х 4.
  * Вернуть true, если кирпич пройдёт
  */
-fun brickPasses(a: Int, b: Int, c: Int, r: Int, s: Int): Boolean {
-    return ((a <= r) && (min(b,c) <= s)) || ((b <= r) && (min(a,c) <= s)) || ((c <= r) && (min(a,b) <= s))
-}
+fun brickPasses(a: Int, b: Int, c: Int, r: Int, s: Int): Boolean = a <= r && min(b,c) <= s || b <= r && min(a,c) <= s
+        || c <= r && min(a,b) <= s
+

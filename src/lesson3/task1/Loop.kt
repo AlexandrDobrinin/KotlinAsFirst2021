@@ -78,8 +78,7 @@ fun digitCountInNumber(n: Int, m: Int): Int =
 fun digitNumber(n: Int): Int {
     var counter = 1
     var number = n
-    while (number > 9)
-    {
+    while (number > 9) {
         number /= 10
         counter++
     }
@@ -108,15 +107,12 @@ fun fib(n: Int): Int {
  * Для заданного числа n > 1 найти минимальный делитель, превышающий 1
  */
 fun minDivisor(n: Int): Int {
-    var md = 2
-    while (md < n)
-    {
-        if (n % md == 0)
-        return md
-        else md++
+    for (i in 2..sqrt(n.toDouble()).toInt()) {
+        if (n % i == 0) return i
     }
     return n
 }
+
 
 /**
  * Простая (2 балла)
@@ -176,9 +172,8 @@ fun lcm(m: Int, n: Int): Int {
  * Взаимно простые числа не имеют общих делителей, кроме 1.
  * Например, 25 и 49 взаимно простые, а 6 и 8 -- нет.
  */
-fun isCoPrime(m: Int, n: Int): Boolean {
-    return lcm(m,n) == m * n
-}
+fun isCoPrime(m: Int, n: Int): Boolean = lcm(m,n) == m * n
+
 
 /**
  * Средняя (3 балла)

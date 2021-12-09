@@ -4,6 +4,8 @@ package lesson4.task1
 
 import lesson1.task1.discriminant
 import kotlin.math.sqrt
+import lesson3.task1.minDivisor
+import lesson3.task1.digitNumber
 
 // Урок 4: списки
 // Максимальное количество баллов = 12
@@ -127,7 +129,8 @@ fun abs(v: List<Double>): Double = TODO()
  *
  * Рассчитать среднее арифметическое элементов списка list. Вернуть 0.0, если список пуст
  */
-fun mean(list: List<Double>): Double = TODO()
+fun mean(list: List<Double>): Double = if (list.isEmpty()) 0.0 else list.sum() / list.size
+
 
 /**
  * Средняя (3 балла)
@@ -177,7 +180,18 @@ fun accumulate(list: MutableList<Int>): MutableList<Int> = TODO()
  * Результат разложения вернуть в виде списка множителей, например 75 -> (3, 5, 5).
  * Множители в списке должны располагаться по возрастанию.
  */
-fun factorize(n: Int): List<Int> = TODO()
+fun factorize(n: Int): List<Int> {
+    var m = n
+    var d = minDivisor(n)
+    val list = mutableListOf<Int>()
+    while (m > 1) {
+        list.add(d)
+        m /= d
+        d = minDivisor(m)
+       }
+return list
+}
+
 
 /**
  * Сложная (4 балла)
@@ -186,7 +200,7 @@ fun factorize(n: Int): List<Int> = TODO()
  * Результат разложения вернуть в виде строки, например 75 -> 3*5*5
  * Множители в результирующей строке должны располагаться по возрастанию.
  */
-fun factorizeToString(n: Int): String = TODO()
+fun factorizeToString(n: Int): String = factorize(n).joinToString("*")
 
 /**
  * Средняя (3 балла)
@@ -195,7 +209,16 @@ fun factorizeToString(n: Int): String = TODO()
  * Результат перевода вернуть в виде списка цифр в base-ичной системе от старшей к младшей,
  * например: n = 100, base = 4 -> (1, 2, 1, 0) или n = 250, base = 14 -> (1, 3, 12)
  */
-fun convert(n: Int, base: Int): List<Int> = TODO()
+fun convert(n: Int, base: Int): List<Int> {
+    var num = n
+    val res = mutableListOf<Int>()
+    if (n < base) return listOf(n)
+    else while (num > 0) {
+        res.add(num % base)
+        num /= base
+    }
+    return res.reversed()
+}
 
 /**
  * Сложная (4 балла)
@@ -208,7 +231,14 @@ fun convert(n: Int, base: Int): List<Int> = TODO()
  * Использовать функции стандартной библиотеки, напрямую и полностью решающие данную задачу
  * (например, n.toString(base) и подобные), запрещается.
  */
-fun convertToString(n: Int, base: Int): String = TODO()
+fun convertToString(n: Int, base: Int): String {
+    val list = convert (n, base)
+    var str = ""
+    for (char in list)
+        str += if (char in 0..9) char.toString()
+    else 'a' + char - 10
+    return str
+}
 
 /**
  * Средняя (3 балла)
@@ -241,7 +271,19 @@ fun decimalFromString(str: String, base: Int): Int = TODO()
  * 90 = XC, 100 = C, 400 = CD, 500 = D, 900 = CM, 1000 = M.
  * Например: 23 = XXIII, 44 = XLIV, 100 = C
  */
-fun roman(n: Int): String = TODO()
+fun roman(n: Int): String {
+    var num = n
+    val ind = arrayOf(1, 4, 5, 9, 10, 40, 50, 90, 100, 400, 500, 900, 1000)
+    val rom = arrayOf("I", "IV", "V", "IX", "X", "XL", "L", "XC", "C", "CD", "D", "CM", "M")
+    var str = ""
+    for (i in 12 downTo 0) {
+        while (num >= ind[i]) {
+           str += rom[i]
+           num -= ind[i]
+        }
+    }
+    return str
+}
 
 /**
  * Очень сложная (7 баллов)
@@ -250,4 +292,40 @@ fun roman(n: Int): String = TODO()
  * Например, 375 = "триста семьдесят пять",
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
-fun russian(n: Int): String = TODO()
+fun russian(n: Int): String {
+    var num1 = n / 1000
+    var num2 = n % 1000
+    val ind = arrayOf(
+        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 30, 40, 50, 60, 70, 80, 90,
+        100, 200, 300, 400, 500, 600, 700, 800, 900
+    )
+    val rus = arrayOf(
+        "один ", "два ", "три ", "четыре ", "пять ", "шесть ", "семь ", "восемь ", "девять ", "десять ",
+        "одиннадцать ", "двенадцать ", "тринадцать ", "четырнадцать ", "пятнадцать ", "шестнадцать ", "семнадцать ",
+        "восемнадцать ", "девятнадцать ", "двадцать ", "тридцать ", "сорок ", "пятьдесят ", "шестьдесят ", "семьдесят ",
+        "восемьдесят ", "девяносто ", "сто ", "двести ", "триста ", "четыреста ", "пятьсот ", "шестьсот ", "семьсот ",
+        "восемьсот ", "девятьсот "
+    )
+    var str1 = ""
+    var str2 = ""
+    for (i in 35 downTo 0) {      // Работа с единицами
+        while (num2 >= ind[i]) {
+            str2 += rus[i]
+            num2 -= ind[i]
+        }
+    }
+    for (i in 35 downTo 2) {      // Работа с тысячами
+        while (num1 >= ind[i]) {
+            str1 += rus[i]
+            num1 -= ind[i]
+        }
+    }
+    str1 += when (num1 % 10) {
+        1 -> "тысяча "
+        2 -> "две тысячи "
+        in 3..4 -> "тысячи "
+        else -> "тысяч "
+    }
+    if (n / 1000 > 0) return (str1 + str2).trim()
+    else return str2.trim()
+}

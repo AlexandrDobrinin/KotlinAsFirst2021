@@ -6,6 +6,7 @@ import lesson1.task1.discriminant
 import kotlin.math.max
 import kotlin.math.sqrt
 import kotlin.math.min
+import lesson1.task1.sqr
 
 // Урок 2: ветвления (здесь), логический тип (см. 2.2).
 // Максимальное количество баллов = 6
@@ -69,13 +70,11 @@ fun minBiRoot(a: Double, b: Double, c: Double): Double {
  * Мой возраст. Для заданного 0 < n < 200, рассматриваемого как возраст человека,
  * вернуть строку вида: «21 год», «32 года», «12 лет».
  */
-fun ageDescription(age: Int): String { if (age % 100 in 10..20) return "$age лет"
-else
-        return when (age % 10) {
-            in 2..4 -> "$age года"
-            1 -> "$age год"
-            else -> "$age лет"
-        }
+fun ageDescription(age: Int): String = when {
+    age % 100 / 10 == 1 -> "$age лет"
+    age % 10 in 2..4 -> "$age года"
+    age % 10 == 1 -> "$age год"
+    else -> "$age лет"
 }
 
 
@@ -91,10 +90,12 @@ fun timeForHalfWay(
     t2: Double, v2: Double,
     t3: Double, v3: Double
 ): Double {
-    val S = (t1 * v1 + t2 * v2 + t3 * v3) / 2
-    if (v1 * t1 >= S) return S / v1
-    else if (v1 * t1 + v2 * t2 >= S) return t1 + (S - t1 * v1) / v2
-    else return t1 + t2 + (S - v1 * t1 - v2 * t2) / v3
+    val s = (t1 * v1 + t2 * v2 + t3 * v3) / 2
+  return when{
+      s <= v1 * t1 -> s / v1
+      s <= v1 * t1 + v2 * t2 -> t1 + (s - t1 * v1) / v2
+      else -> t1 + t2 + (s - v1 * t1 - v2 * t2) / v3
+  }
 }
 
 /**
@@ -110,12 +111,13 @@ fun whichRookThreatens(
     kingX: Int, kingY: Int,
     rookX1: Int, rookY1: Int,
     rookX2: Int, rookY2: Int
-): Int {
-    if (kingX == rookX1 && kingY == rookY2 || kingX == rookX2 && kingY == rookY1) return 3
-    else if (kingX == rookX1 || kingY == rookY1) return 1
-    else if (kingX == rookX2 || kingY == rookY2) return 2
-    else return 0
-}
+): Int  = when {
+        (rookX1 == kingX || rookY1 == kingY) && (rookX2 == kingX || rookY2 == kingY) -> 3
+        rookX1 == kingX || kingY == rookY1 -> 1
+        rookX2 == kingX || kingY == rookY2 -> 2
+        else -> 0
+    }
+
 
 /**
  * Простая (2 балла)
@@ -132,8 +134,7 @@ fun rookOrBishopThreatens(
     rookX: Int, rookY: Int,
     bishopX: Int, bishopY: Int
 ): Int {
-    fun sqr (x: Int) = x * x
-    val cond1 = (kingX == rookX) || (kingY == rookY)
+    val cond1 = kingX == rookX || kingY == rookY
     val cond2 = sqr(bishopX - kingX) == sqr(bishopY - kingY)
     return when {
         cond1 && cond2 -> 3
@@ -152,20 +153,17 @@ fun rookOrBishopThreatens(
  * Если такой треугольник не существует, вернуть -1.
  */
 fun triangleKind(a: Double, b: Double, c: Double): Int {
-    if ((a + b < c) || (a + c < b) || (a + b < c)) return -1
-    else {
-    fun sqr (x: Double) = x * x
-        val c1 =  sqr(max(min(a,b),max(min(b,c),min(a,c))))
-            val c2 = sqr(min(min(a,b),min(b,c)))
-    val triangleSum = c1 + c2 - sqr(max(max(a,b),(max(b,c))))
-    return when  {
-        triangleSum < 0 -> 2
-        triangleSum > 0 -> 0
-        else -> 1
+    val max1 = maxOf(a, b, c)
+    val max3 = minOf(a, b, c)
+    val max2 = a + b + c - max1 - max3
+    var ans = 0
+   return when {
+        max1 > max2 + max3 -> -1
+        sqr(max1) == sqr(max2) + sqr(max3) -> 1
+        sqr(max1) < sqr(max2) + sqr(max3) -> 0
+        else -> 2
     }
 }
-}
-
 /**
  * Средняя (3 балла)
  *
@@ -174,12 +172,12 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
  * Найти длину пересечения отрезков AB и CD.
  * Если пересечения нет, вернуть -1.
  */
-fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int {
-        if (max(a,c) > min(b,d)) return -1 else
-            if (max(a,c) in (min (a,c)..max(b,d)) && min(b,d) in (min (a,c)..max(b,d))) return min(b,d) - max(a,c) else
-                if (max(a,b) in (c..d)) return max(a,b) - c else
-                    if (min(a,b) in (c..d)) return d - min(a,b) else
-                        if (max(c,d) in (a..b)) return max(c,d) - a else
-                            return b - min(c,d)
+fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int = when {
+    max(a,c) > min(b,d) -> -1
+    max(a,c) in min (a,c)..max(b,d) && min(b,d) in min (a,c)..max(b,d) -> min(b,d) - max(a,c)
+    max(a,b) in c..d -> max(a,b)
+    min(a,b) in c..d -> d - min(a,b)
+    max(c,d) in a..b -> max(c,d) - a
+    else -> b - min(c,d)
 }
 
